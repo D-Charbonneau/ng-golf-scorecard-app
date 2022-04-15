@@ -1,0 +1,61 @@
+<mat-card *ngIf="!ready">
+    <form>
+        <mat-form-field>
+            <input matInput placeholder="Player Amount" name="playerAmount" (change)="playerAmountCheck()"
+                [value]="gameSettings.playerAmount" type="number" [(ngModel)]="gameSettings.playerAmount" />
+        </mat-form-field>
+        <button mat-button color="primary" (click)="changePlayerAmount(1)">+</button>
+        <button mat-button color="primary" (click)="changePlayerAmount(-1)">-</button>
+    </form>
+
+    <form *ngFor="let player of gameSettings.players; let i = index">
+        <mat-form-field>
+            <input matInput placeholder="Player #{{i + 1}}" name="player{{i}}" type="text"
+                [(ngModel)]="gameSettings.players[i].name" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="Tee Type" [(value)]="gameSettings.players[i].difficulty">
+                <mat-option *ngFor="let teeType of teeTypes" [value]="teeType">
+                    {{teeType}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </form>
+
+    <button mat-raised-button color="primary" (click)=" readyUp()">Ready up!</button>
+    <button mat-raised-button color="primary" id="loadButton" (click)=" readyUp()">Load</button>
+</mat-card>
+
+<mat-card id="scorecard" *ngIf="ready">
+    <h1>{{course.name}}</h1>
+    <table>
+        <tr id="topRow">
+            <td>Player</td>
+            <td *ngFor="let score of [].constructor(playerData[0].scores.length); index as i">
+                Hole {{i + 1}}
+            </td>
+            <td>Total</td>
+        </tr>
+        <tr *ngFor="let player of [].constructor(playerData.length); index as i">
+            <td>
+                {{playerData[i].name | duplicateNamesPipe: playerData : i}}
+            </td>
+            <td *ngFor="let score of [].constructor(playerData[0].scores.length); index as j">
+                <form class="scoreData">
+                    <mat-form-field class="tableInput">
+                        <input (change)="scoreCheck(i, j)" matInput name="score-{{i}}-{{j}}"
+                            [(ngModel)]="playerData[i].scores[j]" type="number" />
+                    </mat-form-field>
+                    <div>
+                        <button mat-button color="primary" (click)="scoreChanger(i, j, 1)">+</button>
+                        <button mat-button color="primary" (click)="scoreChanger(i, j, -1)">-</button>
+                    </div>
+                </form>
+            </td>
+            <td>
+                {{calculateTotalScore(i)}}
+            </td>
+        </tr>
+    </table>
+    <button id="saveButton" mat-raised-button color="primary">Save Game</button>
+</mat-card>

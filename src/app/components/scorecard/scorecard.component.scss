@@ -1,0 +1,64 @@
+mat-form-field {
+    margin-right: 7.5px;
+
+    &:nth-child(2) {
+        width: 150px;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto auto;
+
+    tr {
+        border-bottom: 1px solid #d1d1d1;
+    }
+}
+
+.tableInput {
+    width: 60px;
+}
+
+.scoreData {
+    display: flex;
+
+    div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    button {
+        padding: none;
+    }
+}
+
+td:nth-child(1n) {
+    width: 100px;
+}
+
+mat-card.scorecard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-card {
+    width: 90%;
+    margin: auto auto;
+}
+
+@media screen and (max-width: 1450px) {
+    mat-card {
+        overflow-x: scroll;
+    }
+}
+
+button#saveButton {
+    margin-top: 20px;
+}
+
+#loadButton {
+    margin-left: 10px;
+}

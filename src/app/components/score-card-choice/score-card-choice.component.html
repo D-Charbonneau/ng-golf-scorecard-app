@@ -1,0 +1,12 @@
+<div class="container">
+    <mat-card *ngFor="let course of courses.courses">
+        <h2>{{course.name}}</h2>
+        <div class="image-container">
+            <img src="{{course.image}}">
+        </div>
+        <span class="spacer"></span>
+        <button mat-button color="primary" routerLink="/course/{{course.id}}">
+            Go to Course
+        </button>
+    </mat-card>
+</div>
