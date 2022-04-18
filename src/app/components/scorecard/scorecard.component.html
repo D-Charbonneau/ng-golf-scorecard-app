@@ -23,7 +23,7 @@
     </form>
 
     <button mat-raised-button color="primary" (click)=" readyUp()">Ready up!</button>
-    <button mat-raised-button color="primary" id="loadButton" (click)=" readyUp()">Load</button>
+    <button mat-raised-button color="primary" id="loadButton" (click)=" loadGameFromDb()">Load</button>
 </mat-card>
 
 <mat-card id="scorecard" *ngIf="ready">
@@ -57,5 +57,5 @@
             </td>
         </tr>
     </table>
-    <button id="saveButton" mat-raised-button color="primary">Save Game</button>
+    <button id="saveButton" mat-raised-button color="primary" routerLink="/" (click)="saveGame()">Save Game</button>
 </mat-card>

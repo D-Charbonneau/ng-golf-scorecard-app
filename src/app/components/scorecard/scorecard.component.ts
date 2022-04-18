@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DbData } from 'src/app/interfaces/db-data';
 import { Player } from 'src/app/interfaces/player';
+import { FirebaseService } from 'src/app/services/firebase.service';
 import { GolfApiService } from 'src/app/services/golf-api.service';
-import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
 
 @Component({
     selector: 'app-scorecard',
@@ -11,8 +12,6 @@ import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat
 })
 export class ScorecardComponent implements OnInit
 {
-    private companyRef: AngularFirestoreDocument<Player[]>;
-
     gameSettings = {
         playerAmount: 1,
         players: [{ name: "Player1", difficulty: "men" }]
@@ -21,17 +20,20 @@ export class ScorecardComponent implements OnInit
     teeTypes = ["pro", "champion", "men", "women", "auto change location"]
 
     playerData: Player[] = <Player[]><unknown>[];
+    dbPlayerData: Player[] = <Player[]><unknown>[];
 
     ready = false;
 
     courseId = 0;
     course;
 
-    constructor(private golfApi: GolfApiService, private route: ActivatedRoute, private db: AngularFirestore) { }
+    constructor(private golfApi: GolfApiService, private route: ActivatedRoute, private firestore: FirebaseService) { }
 
     ngOnInit(): void
     {
+        this.firestore.setDbUrl(this.route.snapshot.params['id']);
         this.getCourse();
+        this.getDbPlayerData();
     }
 
     getCourse()
@@ -39,6 +41,14 @@ export class ScorecardComponent implements OnInit
         this.golfApi.getCourse(this.route.snapshot.params['id']).subscribe(res =>
         {
             this.course = res;
+        });
+    }
+
+    getDbPlayerData()
+    {
+        this.firestore.getSavedData().subscribe(res =>
+        {
+            this.dbPlayerData = res.playerData;
         });
     }
 
@@ -105,15 +115,9 @@ export class ScorecardComponent implements OnInit
         if (this.playerData[playerIndex].scores[scoreIndex] < 0) this.playerData[playerIndex].scores[scoreIndex] = 0;
     }
 
-    loadGame()
+    loadGameFromDb()
     {
-        //Adjust gameSettings and then call ready up manually (You cannot use readyUp() because it will not keep the scores).
-        this.gameSettings.playerAmount = 0; //db.id.playerData.length;
-        this.gameSettings.players = [];
-        for (let i = 0; i < 0 /* db.id.playerData.length */; i++)
-        {
-            this.gameSettings.players[i] = { name: "", difficulty: "" } /* TODO: Change to the database info */
-        }
+        this.playerData = this.dbPlayerData;
         this.ready = true;
     }
 
@@ -121,6 +125,9 @@ export class ScorecardComponent implements OnInit
     {
         //db -> courseid -> data
         //Save data to database in a collection with a key of the course id.
-
+        let tempObj: DbData = {
+            playerData: this.playerData
+        }
+        this.firestore.savePlayerData(tempObj);
     }
 }

@@ -22,7 +22,6 @@ export class ScoreCardChoiceComponent implements OnInit
         this.golfApi.getCourses().subscribe(res =>
         {
             this.courses = res;
-            console.log(res);
         });
     }
 }
